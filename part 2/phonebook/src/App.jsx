@@ -18,7 +18,7 @@ const App = () => {
 
 
   const deletePerson = (person) => {
-    personService.deletePerson(person.id).then((res) => {
+    personService.deletePerson(person.id).then(() => {
       getAllPersons()
       setShowError(true)
       setNotificationMessage(`Deleted ${person.name}.`)
