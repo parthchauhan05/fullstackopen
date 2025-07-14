@@ -3,18 +3,29 @@ import Filters from './components/Filters'
 import Persons from './components/Persons'
 import { useEffect } from 'react'
 import PersonForm from './components/PersonForm'
+import personService from './services/person'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterProp, setFilterProp] = useState('')
   const [data, setData] = useState([])
+
+  const deletePerson = (id) => {
+    personService.deletePerson(id).then(() => getAllPersons())
+  }
+
+  const getAllPersons = () => {
+    personService.getAll()
+      .then(response => {
+        setPersons(response.data)
+    })
+  }
+
+  useEffect(() => {
+    getAllPersons();
+  }, [])
 
   useEffect(() => {
     const temp = filterProp ? persons.filter(item => item.name.toLowerCase().includes(filterProp.toLowerCase())) : persons;
@@ -25,9 +36,13 @@ const App = () => {
     e.preventDefault()
     const duplicate = persons.findIndex(item => item.name == newName)
     if (duplicate !== -1) {
-      alert(`${newName} is already added to phonebook`)
+      if (confirm(`${newName} is already added to phonebook. Do you want to replace the old number with new one?`)) {
+        personService.update(persons[duplicate].id, { name: newName, number: newNumber, id: persons[duplicate].id }).then(() => getAllPersons())
+        setNewName('')
+        setNewNumber('')
+      }
     } else {
-      setPersons([...persons, { name: newName, number: newNumber, id: persons.length+1 }])
+      personService.create({ name: newName, number: newNumber, id: (persons.length+1).toString() }).then(() => getAllPersons())
       setNewName('')
       setNewNumber('')
     }
@@ -42,9 +57,9 @@ const App = () => {
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} setNewName={setNewName} setNewNumber={setNewNumber} />
       
       <h2>Numbers</h2>
-      <Persons data={data} />
+      <Persons data={data} deletePerson={deletePerson} />
     </div>
   )
 }
 
-export default App
+  export default App;
