@@ -27,7 +27,6 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -35,10 +34,17 @@ h1 {
   line-height: 1.1;
 }
 
+h2 {
+  font-size: 1.6rem;
+  line-height: 1.1;
+  margin-bottom: 10px;
+
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 5px 15px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -46,12 +52,39 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+.delete-button {
+  background-color: #F40205;
+  color: #fff;
+}
+.delete-button:hover {
+  background-color: #ff6c64;
+  border-color: #F40205;
+}
 button:hover {
   border-color: #646cff;
+}
+.delete-button:focus,
+.delete-button:focus-visible {
+  outline: 4px auto #F40205;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.notification {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red !important;
 }
 
 @media (prefers-color-scheme: light) {

@@ -8,7 +8,7 @@ const PersonForm = ({newName, setNewName, newNumber, setNewNumber, addPerson}) =
                 number: <input value={newNumber} onChange={(e) => setNewNumber(e.target.value)} />
             </div>
             <div>
-                <button type="submit">add</button>
+                <button type="submit">Add</button>
             </div>
         </form>
     )
