@@ -53,15 +53,15 @@ app.post('/api/persons', (request, response, next) => {
     if (!person.name || !person.number) {
         return response.status(400).json({error: "Name or number is missing"})
     }
-    Person.find({ name: person.name }).then(res => {
-      if (res) {
+  Person.find({ name: person.name }).then(res => {
+      if (res.length > 0) {
           return response.json({ error: 'name must be unique' })
       }
+      const newPerson = Person({ name: person.name, number: person.number })
+      newPerson.save().then(() => {
+        response.json(person)
+      }).catch(error => next(error))
     })
-    const newPerson = Person({ name: person.name, number: person.number })
-    newPerson.save().then(() => {
-      response.json(person)
-    }).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -74,11 +74,13 @@ app.put('/api/persons/:id', (request, response, next) => {
       }
       person.name = name
       person.number = number 
-      return person.save().then((res) => {
+      person.save().then((res) => {
         response.json(res)
       })
     })
-    .catch(error => next(error))
+    .catch(error => {
+      next(error)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
@@ -89,8 +91,7 @@ app.use(unknownEndpoint)
 
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
+  // console.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
