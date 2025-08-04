@@ -1,33 +1,32 @@
-import mongoose from "mongoose"
-const password = process.argv[2]
+import mongoose from 'mongoose'
 
 // const url = `mongodb+srv://admin:${password}@cluster0.svgtiff.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 const url = process.env.MONGODB_URI
 mongoose.set('strictQuery',false)
 
 mongoose.connect(url)
-    .then(result => {
-        console.log('connected to MongoDB')
-    })
-    .catch(error => {
-        console.log('error connecting to MongoDB:', error.message)
-    })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch(error => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
 
 const personSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        minLength: 3,
-        required: true
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    required: true,
+    validate: function (item) {
+      return /^\d{2,3}-\d+$/.test(item)
     },
-    number: {
-        type: String,
-        minLength: 8,
-        required: true,
-        validate: function (item) {
-            return /^\d{2,3}-\d+$/.test(item)
-        },
-        message: (props) => `${props.value} is not a valid phone number.`
-    }
+    message: (props) => `${props.value} is not a valid phone number.`
+  }
 })
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -37,4 +36,4 @@ personSchema.set('toJSON', {
   }
 })
 
-export default mongoose.model('Person', personSchema);
+export default mongoose.model('Person', personSchema)
